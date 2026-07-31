@@ -14,6 +14,9 @@ import { webhookCallback, Composer, type Bot } from "grammy";
 import { buildBot, type Ctx } from "./bot.js";
 import { handlers } from "./handlers.generated.js";
 import { createDurableSessionStorage, type WorkerEnv } from "./toolkit/session/durable.js";
+import { configureMovieStorage } from "./movies/store.js";
+import { moviesUploadedSince } from "./movies/store.js";
+import { now } from "./movies/clock.js";
 
 export { ChatDO } from "./toolkit/session/durable.js";
 
@@ -48,6 +51,7 @@ function getBot(env: WorkerEnv): Promise<Bot<Ctx>> {
         telemetryEnv: env,
         telemetryReporterOptions: { flushOnRecord: true, startTimer: false },
       });
+      configureMovieStorage(createDurableSessionStorage<object>(env));
       await bot.init();
       return bot;
     })();
@@ -80,5 +84,23 @@ export default {
     }
 
     return new Response("not found", { status: 404 });
+  },
+  /** Deploy this as a daily Worker cron; failures are deliberately best-effort. */
+  async scheduled(_event: { scheduledTime: number }, env: WorkerEnv): Promise<void> {
+    if (!env.ADMIN_CHAT_ID) return;
+    configureMovieStorage(createDurableSessionStorage<object>(env));
+    const uploads = await moviesUploadedSince(now() - 24 * 60 * 60 * 1000);
+    const text = uploads.length === 0
+      ? "Daily movie summary: no new uploads today."
+      : `Daily movie summary: ${uploads.length} new ${uploads.length === 1 ? "movie" : "movies"} added today.`;
+    try {
+      await fetch(`https://api.telegram.org/bot${env.BOT_TOKEN}/sendMessage`, {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ chat_id: env.ADMIN_CHAT_ID, text }),
+      });
+    } catch {
+      // A blocked or unavailable admin chat must not make the scheduled event fail.
+    }
   },
 };
