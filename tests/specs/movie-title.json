@@ -1,0 +1,20 @@
+[
+  {
+    "name": "Search movie",
+    "steps": [
+      {
+        "expect": [
+          {
+            "method": "sendMessage",
+            "payload": {
+              "text": "Trigger search for movies matching text"
+            }
+          }
+        ],
+        "send": {
+          "text": "/movie_title"
+        }
+      }
+    ]
+  }
+]
