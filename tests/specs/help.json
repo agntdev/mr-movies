@@ -8,7 +8,7 @@
           {
             "method": "sendMessage",
             "payload": {
-              "text": "ℹ️ Tap /start to open the menu, then pick what you want from the buttons.\n\nEverything in this bot is reachable by tapping — you don't need to remember any commands."
+              "text": "Send a movie title and I’ll find the closest matches.\n\nTap Browse movies to explore the library. Tap a title to stream it.\n\nYou can also use /list, and library owners can use /upload."
             }
           }
         ]

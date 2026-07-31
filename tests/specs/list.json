@@ -1,19 +1,29 @@
 [
   {
-    "name": "/list",
+    "name": "/list shows the empty library",
     "steps": [
       {
         "expect": [
           {
             "method": "sendMessage",
             "payload": {
-              "text": "Browse paginated movie listings (10 per page)"
+              "text": "No movies are available yet — check back soon."
             }
           }
         ],
         "send": {
           "text": "/list"
         }
+      }
+    ]
+  }
+  ,
+  {
+    "name": "Browse button opens the empty library",
+    "steps": [
+      {
+        "send": { "callback": "movies:list:0" },
+        "expect": [{ "method": "editMessageText", "payload": { "text": "No movies are available yet — check back soon." } }]
       }
     ]
   }

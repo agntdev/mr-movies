@@ -1,19 +1,29 @@
 [
   {
-    "name": "/upload",
+    "name": "/upload explains when the owner setting is missing",
     "steps": [
       {
         "expect": [
           {
             "method": "sendMessage",
             "payload": {
-              "text": "Initiate movie upload flow"
+              "text": "Movie uploads aren't set up yet. Ask the owner to add the admin chat setting."
             }
           }
         ],
         "send": {
           "text": "/upload"
         }
+      }
+    ]
+  }
+  ,
+  {
+    "name": "Upload menu button also handles missing setup",
+    "steps": [
+      {
+        "send": { "callback": "movie:upload" },
+        "expect": [{ "method": "editMessageText", "payload": { "text": "Movie uploads aren't set up yet. Ask the owner to add the admin chat setting." } }]
       }
     ]
   }

@@ -1,19 +1,29 @@
 [
   {
-    "name": "Search movie",
+    "name": "A typed title gets a helpful no-match result",
     "steps": [
       {
         "expect": [
           {
             "method": "sendMessage",
             "payload": {
-              "text": "Trigger search for movies matching text"
+              "text": "I couldn't find a movie by that name. Try a different title or a few keywords."
             }
           }
         ],
         "send": {
-          "text": "/movie_title"
+          "text": "A movie that isn't in the library"
         }
+      }
+    ]
+  }
+  ,
+  {
+    "name": "Find a movie button asks for a title",
+    "steps": [
+      {
+        "send": { "callback": "movie:search" },
+        "expect": [{ "method": "editMessageText", "payload": { "text": "Send the title you want to watch." } }]
       }
     ]
   }

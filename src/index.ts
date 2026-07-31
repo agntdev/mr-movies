@@ -8,9 +8,12 @@ async function main() {
     process.exit(1);
   }
   const bot = await buildBot(token);
-  // Publish the "/" command list to Telegram (discoverability). A button-first
-  // bot exposes only /start + /help; everything else is reached via menu buttons.
-  await setDefaultCommands(bot);
+  // These are documented power-user shortcuts; every action remains available
+  // from the main inline menu for the ordinary button-first experience.
+  await setDefaultCommands(bot, [
+    { command: "list", description: "Browse the movie library" },
+    { command: "upload", description: "Upload a movie (owner)" },
+  ]);
   bot.start();
 }
 
